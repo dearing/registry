@@ -56,15 +56,18 @@ func NewJWT(sub string, expiry int64) *JWT {
 
 // Encode encodes a with your secret key, returning a full JWT token.
 func (jwt *JWT) Encode(secretKey []byte) (string, error) {
+
 	// Encode the header and payload as base64
 	headerBytes, err := json.Marshal(jwt.Header)
 	if err != nil {
 		return "", fmt.Errorf("failed to encode header: %v", err)
 	}
+
 	payloadBytes, err := json.Marshal(jwt.Payload)
 	if err != nil {
 		return "", fmt.Errorf("failed to encode payload: %v", err)
 	}
+
 	headerBase64 := base64.RawStdEncoding.EncodeToString(headerBytes)
 	payloadBase64 := base64.RawStdEncoding.EncodeToString(payloadBytes)
 
@@ -82,6 +85,7 @@ func (jwt *JWT) Encode(secretKey []byte) (string, error) {
 
 // Decode decodes a JWT as a string and secret key, returning a JWT object.
 func Decode(token string, secretKey []byte) (*JWT, error) {
+
 	// Split the token into its header, payload, and signature parts
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
@@ -93,6 +97,7 @@ func Decode(token string, secretKey []byte) (*JWT, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode header: %v", err)
 	}
+
 	payloadBytes, err := base64.RawStdEncoding.DecodeString(parts[1])
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode payload: %v", err)
@@ -104,6 +109,7 @@ func Decode(token string, secretKey []byte) (*JWT, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse header: %v", err)
 	}
+	
 	payload := JWTPayload{}
 	err = json.Unmarshal(payloadBytes, &payload)
 	if err != nil {
