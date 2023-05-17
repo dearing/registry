@@ -12,3 +12,4 @@ Java Web Tokens (JWT) are a way to encode information in a token that can be ver
 - No on-disk encryption, or other security measures are taken.
 - JWT algo is arguable, here it is hard coded to HS256
 - `go run cmd/demo.go` for implementation
+- ` go test .` and check the source for a better readme than this
