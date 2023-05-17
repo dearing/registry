@@ -1,6 +1,6 @@
 # Registry
 
-Dead simple account management with Java Web Tokens (JWT).
+Simple account management with Java Web Tokens (JWT).
 
 ## About
 
