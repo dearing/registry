@@ -9,25 +9,23 @@ Java Web Tokens (JWT) are a way to encode information in a token that can be ver
 ## Typical flow diagram (mermaid)
 ```mermaid
 sequenceDiagram
-    participant User
-    participant Browser
+    participant Client
     participant Server
 
-    User ->> Browser: 1. Sends credentials (e.g., username, password)
-    Browser ->> Server: 2. Sends credentials (e.g., username, password)
-    Server ->> Server: 3. Validates credentials
+    Client ->> Server: 1. Sends credentials (e.g., username, password)
+    Server ->> Server: 2. Validates credentials
     alt Credentials Valid
-        Server ->> Server: 4. Generates JWT
-        Server -->> Browser: 5. Sets JWT as a secure cookie
+        Server ->> Server: 3. Generates JWT
+        Server -->> Client: 4. Sets JWT as a secure cookie
     else Credentials Invalid
-        Server -->> Browser: 4. Returns error message
+        Server -->> Client: 4. Returns error message
     end
-    Browser ->> Server: 6. Sends requests with JWT cookie
-    Server ->> Server: 7. Verifies JWT signature and integrity
+    Client ->> Server: 5. Sends requests with JWT cookie
+    Server ->> Server: 6. Verifies JWT signature and integrity
     alt JWT Valid
-        Server -->> Browser: 8. Returns requested data
+        Server -->> Client: 7. Returns requested data
     else JWT Invalid
-        Server -->> Browser: 8. Returns authentication error
+        Server -->> Client: 7. Returns authentication error
     end
 
 ```
