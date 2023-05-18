@@ -2,9 +2,6 @@
 
 ```shell
 go run cmd/*.go
-```
-
-```shell
 server online
 Response Status: 200 OK
 Response Body: User dearing Registered
