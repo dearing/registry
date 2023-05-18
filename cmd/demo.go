@@ -11,7 +11,6 @@ import (
 
 func main() {
 	server := NewServer()
-	server.Register("admin", "password")
 	go http.ListenAndServe(":8080", server)
 
 	fmt.Println("server online")
