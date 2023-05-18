@@ -2,47 +2,92 @@ package main
 
 import (
 	"fmt"
-	"time"
-
-	"github.com/dearing/registry"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/http/cookiejar"
+	"net/url"
 )
 
 func main() {
+	server := NewServer()
+	server.Register("admin", "password")
+	go http.ListenAndServe(":8080", server)
 
-	// register sample account
-	accounts := registry.NewRegistry()
-	accounts.Register("admin", "admin")
+	fmt.Println("server online")
 
-	fmt.Println("Secure Area; please login.")
-
-	var username, password string
-
-	// get username
-	fmt.Print("Enter username:")
-	_, err := fmt.Scanln(&username)
+	// Create a cookie jar to store cookies across requests
+	jar, err := cookiejar.New(nil)
 	if err != nil {
-		fmt.Println("Error:", err)
-		return
+		log.Fatal(err)
 	}
 
-	// get password
-	fmt.Print("Enter password:")
-	_, err = fmt.Scanln(&password)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
+	// Create an HTTP client with the cookie jar
+	client := &http.Client{
+		Jar: jar,
 	}
 
-	// verify username and password
-	err = accounts.Verify(username, password)
+	// register a new user
+	err = clientPost(client, "http://localhost:8080/register")
 	if err != nil {
-		fmt.Println("Invalid username or password")
-		return
+		log.Fatal(err)
 	}
 
-	// create a new JWT token, set expiry to +1 hour
-	jwt := registry.NewJWT(username, time.Now().Add(time.Hour).Unix())
+	// login as the new user
+	err = clientPost(client, "http://localhost:8080/login")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	fmt.Printf("Welcome back %s, your login will expire at %s\n\n", jwt.Payload.Subject, jwt.Payload.ExpiresAt.HumanReadable())
+	// check the session
+	err = clientSession(client)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+}
+
+func clientPost(c *http.Client, endpoint string) error {
+	data := url.Values{}
+	data.Set("username", "newuser")
+	data.Set("password", "password")
+	resp, err := c.PostForm(endpoint, data)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	// Print the response status code and body
+	fmt.Println("Response Status:", resp.Status)
+	fmt.Println("Response Body:", string(body))
+
+	return nil
+}
+
+func clientSession(c *http.Client) error {
+	resp, err := c.Get("http://localhost:8080/session")
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	// Read the response body
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	// Print the response status code and body
+	fmt.Println("Response Status:", resp.Status)
+	fmt.Println("Response Body:", string(body))
+
+	return nil
 }
