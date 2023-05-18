@@ -11,7 +11,7 @@ Java Web Tokens (JWT) are a way to encode information in a token that can be ver
 - review tests for implementation details
 - `go run cmd/*.go` to see an http client demo
 
-```shell
+```text
 go run cmd/*.go
 server online
 Response Status: 200 OK
