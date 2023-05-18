@@ -6,6 +6,7 @@ simple account management with Java Web Tokens (JWT)
 
 Java Web Tokens (JWT) are a way to encode information in a token that can be verified by a server. This library uses JWTs to encode user information, `(jwt.payload.sub)`, and verify compariing the username and password to the map of users.  This is a bcrypted hash from the accounts created before verification by the register function.  Functions to save and load `io.Writer, io.Reader` this as a Go Object Binary (GOB) file are included to ease persistence.
 
+## Typical flow diagram (mermaid)
 ```mermaid
 sequenceDiagram
     participant User
