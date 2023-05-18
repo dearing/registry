@@ -1,16 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
 
-	. "github.com/dearing/registry"
+	"github.com/dearing/registry"
 )
 
 type server struct {
 	*http.ServeMux
-	*Registry
+	*registry.Registry
 }
 
 var secret = []byte("supersecretkey")
@@ -18,7 +19,7 @@ var secret = []byte("supersecretkey")
 func NewServer() *server {
 	s := &server{
 		ServeMux: http.NewServeMux(),
-		Registry: NewRegistry(),
+		Registry: registry.NewRegistry(),
 	}
 
 	s.HandleFunc("/register", s.handleRegister)
@@ -70,7 +71,7 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create JWT
-	jwt := NewJWT(username, time.Now().Add(time.Hour*24).Unix())
+	jwt := registry.NewJWT(username, time.Now().Add(time.Hour*24).Unix())
 	if err != nil {
 		println(err.Error())
 		// return error
@@ -99,7 +100,7 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &cookie)
 
-	message := fmt.Sprintf("Welcome back %s, your login will expire at %s", jwt.Payload.Subject, jwt.Payload.ExpiresAt.HumanReadable())
+	message := fmt.Sprintf("Welcome back %s, your login will expire at %s\n", jwt.Payload.Subject, jwt.Payload.ExpiresAt.HumanReadable())
 	w.Write([]byte(message))
 }
 
@@ -115,14 +116,20 @@ func (s *server) handleSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// decode the JWT token
-	jwt, err := Decode(cookie.Value, secret)
+	jwt, err := registry.Decode(cookie.Value, secret)
 	if err != nil {
 		println(err.Error())
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
+	jsonData, err := json.Marshal(jwt)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	// return stored jwt
-	message := fmt.Sprintf("%+v", jwt)
-	w.Write([]byte(message))
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
 }
