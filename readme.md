@@ -12,22 +12,29 @@ sequenceDiagram
     participant Client
     participant Server
 
-    Client ->> Server: 1. Sends credentials (e.g., username, password)
-    Server ->> Server: 2. Validates credentials
-    alt Credentials Valid
-        Server ->> Server: 3. Generates JWT
-        Server -->> Client: 4. Sets JWT as a secure cookie
-    else Credentials Invalid
-        Server -->> Client: 4. Returns error message
-    end
-    Client ->> Server: 5. Sends requests with JWT cookie
-    Server ->> Server: 6. Verifies JWT signature and integrity
-    alt JWT Valid
-        Server -->> Client: 7. Returns requested data
-    else JWT Invalid
-        Server -->> Client: 7. Returns authentication error
+    Client ->> Server: 1. Register (Send registration data)
+    Server ->> Server: 2. Process registration
+    alt Registration Successful
+        Server -->> Client: 3. Return registration success message
+    else Registration Failed
+        Server -->> Client: 3. Return registration failure message
     end
 
+    Client ->> Server: 4. Login (Send login credentials)
+    Server ->> Server: 5. Authenticate user
+    alt Authentication Successful
+        Server -->> Client: 6. Return JWT (JSON Web Token)
+    else Authentication Failed
+        Server -->> Client: 6. Return authentication failure message
+    end
+
+    Client ->> Server: 7. Request session information (Send JWT in request)
+    Server ->> Server: 8. Verify JWT
+    alt JWT Verification Successful
+        Server -->> Client: 9. Return session information
+    else JWT Verification Failed
+        Server -->> Client: 9. Return JWT verification failure message
+    end
 ```
 
 ## Notes
