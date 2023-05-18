@@ -61,23 +61,22 @@ func TestRegistry(t *testing.T) {
 	}
 
 	if err := registy.Verify(username, password); err != nil {
-		t.Error("Validate should not error for valid password")
+		t.Error("Validate should not error for valid password\n", err)
 	}
 
 	if err := registy.Verify(username, "!password"); err == nil {
-		t.Error("Validate should error for invalid password")
+		t.Error("Validate should error for invalid password\n", err)
 	}
 
 	if err := registy.Unregister(username); err != nil {
-		t.Error("Registry should not error when deleting account")
+		t.Error("Registry should not error when deleting account\n", err)
 	}
 
 	if len(registy.Accounts) != 0 {
 		t.Error("Registry should not have any accounts")
 	}
 
-	err = registy.Register(username, password)
-	if err == nil {
+	if err := registy.Register(username, password); err == nil {
 		t.Error("Registry should error when adding extant account")
 	}
 

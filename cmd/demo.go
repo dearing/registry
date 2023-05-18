@@ -11,7 +11,7 @@ func main() {
 
 	// register sample account
 	accounts := registry.NewRegistry()
-	accounts.Register("admin", "password")
+	accounts.Register("admin", "admin")
 
 	fmt.Println("Secure Area; please login.")
 

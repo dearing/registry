@@ -48,7 +48,8 @@ func TestJWT(t *testing.T) {
 		t.Errorf("JWT token expiry should be later than issued date  %v >= %v", jwt.Payload.ExpiresAt, jwt.Payload.IssuedAt)
 	}
 
-	// check that the expiry is one hour after the issued date
+	// Check that the expiry is one hour after the issued date
+
 	if time.Unix(int64(decodedJwt.Payload.ExpiresAt), 0).Sub(time.Unix(int64(decodedJwt.Payload.IssuedAt), 0)) != time.Hour {
 		t.Errorf("JWT token expiry should be 1 hour after issued date  %v != %v", time.Unix(int64(decodedJwt.Payload.ExpiresAt), 0).Sub(time.Unix(int64(decodedJwt.Payload.IssuedAt), 0)), time.Hour)
 	}
