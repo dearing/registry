@@ -49,7 +49,7 @@ func (s *server) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// successful registration
-	http.Error(w, "User Register", http.StatusOK)
+	http.Error(w, fmt.Sprintf("User %s Registered", username), http.StatusOK)
 }
 
 func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {

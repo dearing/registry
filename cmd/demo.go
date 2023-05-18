@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+	"os/user"
 )
 
 func main() {
@@ -48,7 +49,13 @@ func main() {
 
 func clientPost(c *http.Client, endpoint string) error {
 	data := url.Values{}
-	data.Set("username", "newuser")
+
+	currentUser, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	data.Set("username", currentUser.Username)
 	data.Set("password", "password")
 	resp, err := c.PostForm(endpoint, data)
 	if err != nil {
