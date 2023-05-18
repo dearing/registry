@@ -75,11 +75,6 @@ func TestRegistry(t *testing.T) {
 	if len(registy.Accounts) != 0 {
 		t.Error("Registry should not have any accounts")
 	}
-
-	if err := registy.Register(username, password); err == nil {
-		t.Error("Registry should error when adding extant account")
-	}
-
 }
 
 // BenchmarkRegistry benchmarks the account registry
