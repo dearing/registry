@@ -88,7 +88,7 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// create a secure cookie with the JWT token
+	// create cookie with the JWT token
 	cookie := http.Cookie{
 		Expires:  time.Now().Add(time.Hour),
 		HttpOnly: true,
@@ -107,7 +107,7 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 func (s *server) handleSession(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	// retrieve the JWT from the secure cookie
+	// retrieve the JWT from the cookie
 	cookie, err := r.Cookie("jwt")
 	if err != nil {
 		println(err.Error())
